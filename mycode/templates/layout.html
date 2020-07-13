@@ -10,12 +10,17 @@
 		<link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">	
 
 		<!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
 
-     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
+     	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
+
+     	<!-- add in animate.css -->
+     	<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" rel="stylesheet">
+
+    
 	</head>
 
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light ">
 		<a class="navbar-brand" href="{{ url_for('index') }}">Gabriel Espinoza</a>
 		<button
 			class="navbar-toggler"
@@ -31,11 +36,6 @@
 
 	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	    	<ul class="navbar-nav mr-auto">
-	    		<li class="nav-item active">
-	    			<a class="nav-link" href="{{ url_for('index') }}">Home
-	    				<span class="sr-only">(current)</span>
-	    			</a>
-	    		</li>
 	    		<li class="nav-item">
 	    			<a class="nav-link" href="{{ url_for('experience') }}">Experience</a>
 	    		</li>
@@ -55,8 +55,10 @@
 	    </div>
 	</nav>
 
+		
 	{% block content %}
   	{% endblock %}
+  	
 
 	<!-- Footer -->
 	<footer class="footer">

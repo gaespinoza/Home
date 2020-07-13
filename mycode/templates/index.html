@@ -1,26 +1,37 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="center-everything">
-	<h1>Gabriel Antonio Espinoza</h1>
-	<h2>Welcome to my personal page! currently under construction...</h2>
+		<div class="center-everything animate__animated animate__fadeIn">
+			
+				<h2>Gabriel Antonio Espinoza</h2>
+				<!--<div class="resize">
+					<img src = "{{ url_for('static', filename='pictures/me.jpg') }}" align="middle" class="resize">
+				</div>-->
+		</div>
 
-	<a class="button-link" href= "{{ url_for('experience') }}">Experience</a>
-	<h3> <<-- view my technical experience</h3>
-	<br>
-	<a class="button-link" href= "{{ url_for('blog') }}">Blog</a>
-	<h3> <<-- view my personal blog</h3>
-	<br>
-	<a class="button-link" href= "{{ url_for('resources') }}">Resources</a>
-	<h3> <<-- view important resources</h3>
-	<br>
-	<a class="button-link" href= "{{ url_for('games') }}">Games</a>
-	<h3> <<-- check out some games I made</h3>
-	<br>
-	<a class="button-link" href= "{{ url_for('music') }}">Music</a>
-	<h3> <<-- here's some great music</h3>
-	<br>
+		<div class="center-everything animate__animated animate__fadeIn">
+			
+			
+			<h2>Welcome to my personal page! currently under construction...</h2>
 
-</div>
+			<a class="button-link" href= "{{ url_for('experience') }}">Experience</a>
+			
+			
+			<a class="button-link" href= "{{ url_for('blog') }}">Blog</a>
+			
+			
+			<a class="button-link" href= "{{ url_for('resources') }}">Resources</a>
+			
+			
+			<a class="button-link" href= "{{ url_for('games') }}">Games</a>
+			
+			
+			<a class="button-link" href= "{{ url_for('music') }}">Music</a>
+			
+			
+
+		</div>
+	
+
 
 {% endblock content %}
