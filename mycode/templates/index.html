@@ -1,46 +1,62 @@
 {% extends "layout.html" %}
 {% block content %}
 
+	<!-- custom CSS -->
+	<link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet" type="text/css">
 
-		<div class="center-everything animate__animated animate__fadeIn">
+
+	<div class="animate__animated animate__fadeIn">
+
+		<div class="sidenav sidepad">
+			<div class="container-fluid">
+				<img class="rounded-circle mx-auto d-block" src="../static/pictures/mt.jpg"/>
+				<p class="sidetext">software_engineer - computer_scientist - data_scientist - earth_lover - learner</p>
+			</div>
+			<div class="container-fluid">
+				<a href="../static/documents/resume.pdf">
+					<h4 style="text-align: center;">Resume</h4>
+					<!-- <embed src= "../static/documents/resume.pdf" type="application/pdf" class = "embed" width = "100%" height="300px" /> -->
+				</a>
+			</div>
+			<div class="container-fluid myIcons mx-auto d-block">
+				<a style="color: #000000;"  href="https://github.com/gaespinoza"><i class="embed fab fa-github fa-2x" aria-hidden="true"></i></a>
+				<a style="color: #0072b1;"  href="www.linkedin.com/in/gabriel-e-b587b0126"><i class="embed fab fa-linkedin fa-2x" aria-hidden="true"></i></a>
+				<a style="color: #1da1f2;"  href="https://twitter.com/gabantesp"><i class="embed fab fa-twitter fa-2x" aria-hidden="true"></i></a>
+				<a style="color: #1ab26b;"  href="https://open.spotify.com/user/elbookmaster?si=93OJBcNpRtmnC0sP_FOUsw"><i class="embed fab fa-spotify fa-2x" aria-hidden="true"></i></a>
+			</div>
+		</div>
+
+		<div class ="main">
 			
-				
-				<div class="container center-everything">
-					<img style='height: auto; width: 80%; object-fit: contain' src="../static/pictures/me.jpg">
-					<!--<img src = "{{ url_for('static', filename='pictures/me.jpg') }}" >-->
-					<div class="text-block">
-						<h2>Gabriel Antonio Espinoza</h2>
+			
+			
+					<div align="center" style="position: relative;">
+
+						<img class="rounded-pill myImage" src="../static/pictures/me.jpg"/>
+						
+						<h2 class="myText">Gabriel Antonio Espinoza</h2>
+						
 					</div>
-				</div>
-		</div>
-
-		<div class="center-everything animate__animated animate__fadeIn">
-			
-			
-			<h2>Welcome to my personal page! currently under construction...</h2>
-			<div>
+					
 				
+	
+			
+
+			<div class="textBlock container-fluid animate__animated animate__fadeIn">
+						
+				<h1>About Me</h1>
+				<p>I am a senior at the <a href="https://www.wm.edu/">College of William & Mary</a> pursuing a Major in Computer Science and a Minor in Data Science. </p>
+
 			</div>
-
-			<div class="row">
-
-			<a class="button-link" href= "{{ url_for('experience') }}">Experience</a>
-			
-			
-			<a class="button-link" href= "{{ url_for('blog') }}">Blog</a>
-			
-			
-			<a class="button-link" href= "{{ url_for('resources') }}">Resources</a>
-			
-			
-			<a class="button-link" href= "{{ url_for('games') }}">Games</a>
-			
-			
-			<a class="button-link" href= "{{ url_for('music') }}">Music</a>
-			</div>
-			
-
 		</div>
+		
+		
+	</div>
+		
+
+		
+
+		
 	
 
 

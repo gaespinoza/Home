@@ -1,0 +1,82 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,900);
+
+
+img {
+  width: 60%;
+  height: 60%;
+}
+
+.embed:hover{
+  color:424242 !important;
+  -webkit-transition: all .3s ease-in !important;
+  -moz-transition: all .3s ease-in !important;
+  -ms-transition: all .3s ease-in !important;
+  -o-transition: all .3s ease-in !important;
+  transition: all .3s ease-in !important;
+  opacity: 1 !important;
+  transform: scale(1.15) !important;
+  -ms-transform: scale(1.15) !important; /* IE 9 */
+  -webkit-transform: scale(1.15) !important; /* Safari and Chrome */
+}
+
+/* The sidebar menu */
+.sidenav {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 20%; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 56px; /* Stay at the top */
+  left: 0;
+  background-color: #4a4c4f; 
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
+}
+
+.sidepad {
+  padding-top: 2%;
+  align-items: center;
+}
+
+.sidetext {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: white;
+  font-size: 12px;
+  text-align: center;
+}
+
+.myIcons {
+  padding-top: 40px;
+  text-align: center;
+}
+
+.main {
+  margin-left: 20%; /* Same as the width of the sidebar */
+  padding: 10px 10px;
+  top:56px;
+}
+
+.myImage {
+  
+  margin-top: 100px;
+}
+
+
+.myText
+{ 
+  background-color: rgba(0,0,0,0.3) !important;
+  position:absolute;
+  z-index:100;   
+  color:white;
+  font-size:24px;
+  font-weight:bold;
+  top: 50%;
+  left: 50%;
+}
+
+.textBlock
+{
+  padding-top: 100px;
+  padding-left: 80px;
+  padding-right: 80px;
+}

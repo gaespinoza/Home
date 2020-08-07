@@ -1,3 +1,14 @@
+
+.footer-layer {
+	position: relative;
+  z-index: 4;
+  bottom: 0;
+  width: 100%;
+  height: 2.5rem;
+  background-color: #4a4c4f;
+  color: white;
+}
+
 html {
 	margin: 0;
 	padding: 0;
@@ -40,11 +51,17 @@ body {
 }
 .text-block {
 	position: absolute;
-  	bottom: 80px !important;
-  	right: 80px !important;
-  	background-color: rgba(255,255,255,0.3) !important;
+  	bottom: 20px !important;
+  	right: 20px !important;
+  	background-color: rgba(0,0,0,0.3) !important;
   	color: white !important;
   	padding-left: 20px !important;
   	padding-right: 20px!important;
 }
+.center-this {
+	display: flex;
+	margin-left: auto;
+	margin-right: auto;
+	align-items: center;
+
 
