@@ -1,2 +1,1 @@
-worker: pip install -r requirements.txt
-web: python run.py
+web: gunicorn --bind 0.0.0.0:$PORT flaskapp:app
