@@ -1,2 +1,2 @@
-web: gunicorn gettingstarted.wsgi
-web: gunicorn run:app
+worker: pip install -r requirements.txt
+web: python run.py
