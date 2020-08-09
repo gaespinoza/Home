@@ -43,6 +43,11 @@ img {
   color: white;
   font-size: 12px;
   text-align: center;
+  
+}
+
+.minWidth {
+  min-width: 150px !important;
 }
 
 .myIcons {
