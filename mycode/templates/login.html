@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="center-everything">
-	<h1>Admin Login</h1>
+	<h1>Login</h1>
 	<div>
 		<form method="POST" action="">
 			{{ form.hidden_tag() }}
@@ -20,6 +20,17 @@
 			</div>
 			<div class="form-group">
 				<div>
+					{{ form.email.label() }} {% if form.email.errors %} {{ form.email(class_="form-control") }}
+					<div>
+						{% for error in form.email.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+					{% else %} {{ form.email(class_="form-control") }} {% endif %}
+				</div>
+			</div>
+			<div class="form-group">
+				<div>
 					{{ form.password.label() }} {% if form.password.errors %} {{ form.password(class_="form-control") }}
 					<div>
 						{% for error in form.password.errors %}
@@ -29,24 +40,20 @@
 					{% else %} {{ form.password(class_="form-control") }} {% endif %}
 				</div>
 			</div>
-			<div class="form-group">
-				<div>
-					{{ form.passcode.label() }} {% if form.passcode.errors %} {{ form.passcode(class_="form-control") }}
-					<div>
-						{% for error in form.passcode.errors %}
-						<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-					{% else %} {{ form.passcode(class_="form-control") }} {% endif %}
-				</div>
-			</div>
+			<div class="form-check">
+                {{ form.remember(class="form-check-input") }}
+                {{ form.remember.label(class="form-check-label") }}
+            </div>
 			<div>
 				{{ form.submit( class_="btn btn-primary submit") }}
 			</div>
+			<small class="text-muted ml-2">
+				<a href="#">Forgot Password</a>
+			</small>
 		</form>
 	</div>
 	<div class="border-top pt-3">
-		<small class="text-muted">Not Registered?<a href="{{ url_for('adminregister') }}">Sign Up</a></small>
+		<small class="text-muted">Not Registered?<a href="{{ url_for('register') }}">Sign Up</a></small>
 	</div>
 </div>
 

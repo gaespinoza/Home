@@ -63,6 +63,23 @@
 	    			<a class="nav-link" href="{{ url_for('music') }}">Music</a>
 	    		</li>
 	    	</ul>
+	    	<ul class="navbar-nav">
+	    		{% if current_user.is_authenticated %}
+	    			<li class="nav-item">
+		    			<a class="nav-link" href="{{ url_for('account') }}">Account</a>
+		    		</li>
+		    		<li class="nav-item">
+		    			<a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+		    		</li>
+		    	{% else %}
+		    		<li class="nav-item">
+		    			<a class="nav-link" href="{{ url_for('login') }}">Login</a>
+		    		</li>
+		    		<li class="nav-item">
+		    			<a class="nav-link" href="{{ url_for('register') }}">Register</a>
+		    		</li>
+		    	{% endif %}
+	    	</ul>
 	    </div>
 	</nav>
 
@@ -86,7 +103,8 @@
 			<div class="row align-items-center">
 				<div class="col-md-4">
 					<span class="copyright">Copyright &copy; Gabriel Espinoza 2020</span>
-				</div>
+					
+				</div><a style="align-items: right !important; color: #4a4c4f;" href="{{ url_for('adminlogin') }}">test</a>
 			</div>
 		</div>
 	</footer>
