@@ -1,10 +1,53 @@
 {% extends "layout.html" %}
+<link href="{{ url_for('static', filename='css/blog.css') }}" rel="stylesheet" type="text/css">
+
+
 {% block content%}
 
+<link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet" type="text/css">
 
-	<div class="center-everything animate__animated animate__fadeIn">
-		<h2>BLOG</h2>
+<div class="sidenav sidepad animate__animated animate__fadeIn">
+	{% if current_user.is_authenticated %}
+		<div class="container-fluid">
+			<a class="nav-link" href="{{ url_for('drafts') }}">Drafts</a>
+		</div>
+		<div class="container-fluid">
+			<a class="nav-link" href="{{ url_for('create') }}">Create Entry</a>
+		</div>
+			{% endif %}
+	<div class="container-fluid">
+
+		{% block search_bar %}
+            <form action="{{ url_for('blogs') }}" class="navbar-form navbar-right nav-item" id="search-form" method="get" role="search">
+              <div class="form-group">
+                <input class="form-control" name="q" placeholder="Search" type="text" value="{% if search %}{{ search }}{% endif %}">
+              </div>
+            </form>
+		  {% endblock %}
 	</div>
+	{% if search %}
+		<div class="container-fluid">
+			<a class="nav-link" href="{{ url_for('blogs') }}">Back</a>
+		</div>
+	{% endif %}
+	<div class="container-fluid">
+		
+		{% block page_header %}
+			<div style="padding-top: 40px;" class="page-header">
+				<h2 style="color: #efe6dd;">{% block content_title %}{% if search %}Search "{{ search }}"{% else %}Gabe's Blog{% endif %}{% endblock %}</h2>
+			</div>
+		{% endblock %}
+	</div>
+
+</div>
+
+
+	
+<div style="padding-top: 60px;" class="main animate__animated animate__fadeIn">
+
+
+	
+</div>
 
 
 {% endblock content %}
