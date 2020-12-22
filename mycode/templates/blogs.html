@@ -1,7 +1,7 @@
 {% extends "blog.html" %}
 {% include "blog.html" %}
 {% block content %}
-<div align="center" style="padding-top: 60px;" class="main animate__animated animate__fadeIn">
+<div align="center" style="padding-top: 60px;" class="animate__animated animate__fadeIn">
     
 
     {% for entry in object_list %}
@@ -10,7 +10,7 @@
                     {{ entry.title }}
                 </a>
             </h3>
-            <p>Created {{ entry.timestamp.strftime('%m/%d/%Y at %X') }}</p>
+            <p>Created {{ entry.timestamp.strftime('%x at %X') }}</p>
     {% endfor %}
     {% include "includes/pagination.html" %}
 </div>

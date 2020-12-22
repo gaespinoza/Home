@@ -1,10 +1,10 @@
 {% include "blog.html" %}
-<div class="main">
-    <li><a href="{{ url_for('blogs', slug=entry.slug) }}">back</a></li>
+<div>
+    <a style="padding: 5px;"href="{{ url_for('blogs', slug=entry.slug) }}">back</a>
 
 {% block extra_header %}
   {% if current_user.is_authenticated %}
-    <li><a href="{{ url_for('edit', slug=entry.slug) }}">Edit entry</a></li>
+    <a style="padding: 5px;" href="{{ url_for('edit', slug=entry.slug) }}">Edit entry</a>
   {% endif %}
 {% endblock %}
 
@@ -14,7 +14,7 @@
     {% if entry.media != 'None' %}
         <img style="height: 250px; width: auto;" src="{{ entry.media }}">
     {% endif %}
-<p>Created {{ entry.timestamp.strftime('%m/%d/%Y at %G:%I%p') }}</p>
+<p>Created {{ entry.timestamp.strftime('%x at %X') }}</p>
 </div>
 <div class="textBlock">
 {{ entry.html_content }}

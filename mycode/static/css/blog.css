@@ -4,3 +4,45 @@
     margin-top: 5%;
     margin-left: 2%;
 }
+
+.toplinks{
+    padding: 5px;
+}
+
+.searchbar{
+    
+    width: 20%; 
+    padding-right: 5px;
+}
+
+.toptab{
+    height: 5%;
+    width: 100%;
+    background-color: #4a4c4f;
+}
+
+.blogul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.leftitem{
+    float: left;
+}
+.rightitem{
+    float: right;
+}
+
+.bloga {
+    display: block;
+    color: #efe6dd;
+    text-align: center;
+    padding: 5px;
+    
+}
+
+li a.hover{
+    background-color: #111111;
+}
