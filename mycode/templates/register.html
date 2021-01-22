@@ -56,7 +56,10 @@
 				{% else %} {{ form.confirm_passcode(class_="form-control") }} {% endif %}
 			</div>
 
-			
+			<div class="form-check">
+                {{ form.is_admin(class="form-check-input") }}
+                {{ form.is_admin.label(class="form-check-label") }}
+            </div>
 
 			<div>
 			{{ form.submit(class_="btn btn-primary submit") }}

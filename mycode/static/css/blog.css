@@ -46,3 +46,10 @@
 li a.hover{
     background-color: #111111;
 }
+
+.blogContent{
+    padding-left: 15%;
+    padding-right: 15%;
+    padding-top: 2%;
+    white-space: pre-wrap;
+}

@@ -1,15 +1,21 @@
-from mycode import app, database, bcrypt
-from mycode.forms import LoginForm #, RegistrationForm
-from mycode.models import Entry, FTSEntry, User
-from flask import render_template, url_for, redirect, request, flash, session, abort, Markup, Response
+from mycode import app, bcrypt, db
+from mycode.forms import LoginForm, RegistrationForm, SearchForm
+from mycode.models import Entry, User
+from flask import render_template, url_for, redirect, request, flash, session, abort, Markup, Response, g, current_app
 from flask_login import current_user, login_user, logout_user, login_required
-from playhouse.sqlite_ext import *
-from playhouse.flask_utils import FlaskDB, get_object_or_404, object_list
+
+
+
 import secrets
 import os
 import string
 import datetime
 import functools
+
+@app.before_request
+def before_request():
+	g.search_form = SearchForm()
+	
 
 
 @app.route("/", methods =["GET"])
@@ -18,28 +24,29 @@ def index():
 	return render_template('index.html')
 
 #Code used to create registration
-# @app.route("/register", methods=['GET','POST'])
-# def register():
-# 	if current_user.is_authenticated:
-# 		return redirect(url_for('index'))
-# 	form = RegistrationForm()
-# 	if form.validate_on_submit():
-# 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-# 		hashed_passcode = bcrypt.generate_password_hash(form.passcode.data).decode('utf-8')
-# 		user = User(username=form.username.data, password=hashed_password, passcode=hashed_passcode)
-# 		user.save()
-# 		flash('Your account has been created', 'success')
-# 		return redirect(url_for('login'))
-# 	return render_template('register.html', form=form)
+@app.route("/register", methods=['GET','POST'])
+def register():
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
+	form = RegistrationForm()
+	if form.validate_on_submit():
+		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+		hashed_passcode = bcrypt.generate_password_hash(form.passcode.data).decode('utf-8')
+		user = User(username=form.username.data, password=hashed_password, passcode=hashed_passcode, is_admin=form.is_admin.data)
+		db.session.add(user)
+		db.session.commit()
+		flash('Your account has been created', 'success')
+		return redirect(url_for('login'))
+	return render_template('register.html', form=form)
 
-@app.route('/login/', methods=['GET', 'POST'])
+@app.route('/login/', methods=["GET", "POST"])
 def login():
 	
 	if current_user.is_authenticated:
 		return redirect(url_for('index'))
 	form = LoginForm()	
-	if request.method == 'POST' and request.form.get('password'):
-		user = User.get(User.username==form.username.data)
+	if form.validate_on_submit:
+		user = User.query.filter_by(username=form.username.data).first()
 		if user and bcrypt.check_password_hash(user.password, form.password.data) and bcrypt.check_password_hash(user.passcode, form.passcode.data):
 			login_user(user, remember=form.remember.data)
 			next_page = request.args.get('next')
@@ -48,7 +55,7 @@ def login():
 			flash('Login Failed. Check credentials.', 'danger')
 	return render_template('login.html', form=form)
 
-@app.route('/logout/', methods=['GET', 'POST'])
+@app.route('/logout/', methods=["GET", "POST"])
 def logout():
 	logout_user()
 	return redirect(url_for('index'))
@@ -57,29 +64,63 @@ def logout():
 def experience():
 	return render_template('/experience.html')
 
-@app.route("/blogs", methods = ["GET"])
+@app.route("/blogs", methods = ["GET", "POST"])
 def blogs():
-	search_query = request.args.get('q')
-	if search_query:
-		query = Entry.search(search_query)
-	else:
-		query = Entry.public().order_by(Entry.timestamp.desc())
-	return object_list('blogs.html', query, search=search_query, check_bounds=False)
+	
+	page = request.args.get('page', 1, type=int)
+	posts = Entry.query.filter_by(published=True).paginate(
+		page, current_app.config['POSTS_PER_PAGE'], False
+	)
+	next_url = url_for('blogs', page=posts.next_num) if posts.has_next else None
 
-def _create_or_edit(entry, template):
+	prev_url = url_for('blogs', page=posts.prev_num) if posts.has_prev else None
+
+	
+
+	return render_template('blogs.html', title='Explore',
+	posts = posts.items, next_url=next_url, prev_url=prev_url)
+	
+
+@app.route("/search")
+def search():
+	
+	if not g.search_form.validate():
+		
+		return redirect(url_for('blogs'))
+	
+	page = request.args.get('page', 1, type=int)
+	
+	posts, total = Entry.search(g.search_form.q.data, page, current_app.config['POSTS_PER_PAGE'])
+	
+	next_url = url_for('search', q=g.search_form.q.data, page = page + 1) if total > page * current_app.config['POSTS_PER_PAGE'] else None
+	prev_url = url_for('search', q=g.search_form.q.data, page = page - 1) if page > 1 else None
+	return render_template('blogs.html', title='Search', posts=posts, next_url=next_url, prev_url=prev_url )
+
+def _create_or_edit(entry, template, md):
 	if request.method == 'POST':
+		
 		entry.title = request.form.get('title') or ''
-		entry.content = request.form.get('content') or ''
-		entry.published = request.form.get('published') or False
+		entry.content = request.form.get('editordata') or ''
+		pub = request.form.get('published')
 		entry.media = request.form.get('media') or ''
-		delete = request.form.get('delete') or False		
-		if (delete == 'y'):
-			entry.delete_instance()
+		delete = request.form.get('delete') or False
+		
+		if (pub == 'True'):
+			entry.published = True		
+		if (delete == 'True'):
+			
+			db.session.delete(entry)
+			
+			db.session.commit()
 			return redirect(url_for('blogs'))
 		elif not (entry.title and entry.content):
 			flash('Title and Content are required.', 'danger')
 		else:
+			if md == 'c':
+				db.session.add(entry)
+			
 			entry.save()
+			db.session.commit()
 			flash('Entry Saved Successfully', 'success')
 			if entry.published:
 				return redirect(url_for('detail', slug=entry.slug))
@@ -90,28 +131,36 @@ def _create_or_edit(entry, template):
 @app.route('/create/', methods=['GET', 'POST'])
 @login_required
 def create():
-	return _create_or_edit(Entry(title='', content=''), 'create.html')	
+	return _create_or_edit(Entry(title='', content=''), 'create.html', 'c')	
 
 @app.route('/drafts/')
 @login_required
 def drafts():
-	query = Entry.drafts().order_by(Entry.timestamp.desc())
-	return object_list('blogs.html', query, check_bounds=False)
+	posts = Entry.query.filter_by(published=False).all()
+	
+	
+	return render_template('blogs.html', posts=posts, check_bounds=False)
 
 @app.route('/<slug>/')
 def detail(slug):
 	if session.get('logged_in'):
-		query = Entry.select()
+		query = Entry.query.all()
 	else:
 		query = Entry.public()
-	entry = get_object_or_404(query, Entry.slug == slug)
-	return render_template('detail.html', entry=entry)
+	entry = Entry.query.filter_by(slug=slug).first()
+	if entry:
+		
+		return render_template('detail.html', entry=entry)
+
+
 
 @app.route('/<slug>/edit/', methods=['GET', 'POST'])
 @login_required
 def edit(slug):
-	entry = get_object_or_404(Entry, Entry.slug == slug)
-	return _create_or_edit(entry, 'edit.html')
+	
+	entry = Entry.query.filter_by(slug=slug).first()
+	
+	return _create_or_edit(entry, 'edit.html', 'e')
 
 @app.route("/resources", methods = ["GET"])
 def resources():

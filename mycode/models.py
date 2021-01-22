@@ -1,23 +1,63 @@
-from mycode import flask_db, app, database, oembed_providers, login_manager
-from flask import render_template, url_for, redirect, request, flash, abort, Markup
+from mycode import db, app, login_manager, ModelView, AdminIndexView
+from mycode.search import add_to_index, remove_from_index, query_index
+from flask import render_template, url_for, redirect, request, flash, abort
 from flask_login import UserMixin, current_user
-from micawber import bootstrap_basic, parse_html
-from markdown import markdown
-from markdown.extensions.codehilite import CodeHiliteExtension
-from markdown.extensions.extra import ExtraExtension
-from peewee import *
-from playhouse.sqlite_ext import *
+
 import datetime as datetime
 import re
 
+class SearchableMixin(object):
+    @classmethod
+    def search(cls, expression, page, per_page):
+        ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+        when = []
+        for i in range(len(ids)):
+            when.append((ids[i], i))
+        return cls.query.filter(cls.id.in_(ids)).order_by(
+            db.case(when, value=cls.id)), total
+        
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+            'add' : list(session.new),
+            'update' : list(session.dirty),
+            'delete' : list(session.deleted)
+        }
+
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes['add']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None 
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
+
+db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
+db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
+
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get(int(user_id))
+    return User.query.get(int(user_id))
 
-class User(flask_db.Model, UserMixin):
-    username = CharField(unique=True)
-    password = CharField(unique=True)
-    passcode = CharField(unique=True)
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+
+    username = db.Column(db.String(64), unique=True, nullable=False)
+    password = db.Column(db.String(64), nullable=False)
+    passcode = db.Column(db.String(64), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 	
     def __repr__(self):
         return f"User('{self.username}', '{self.id}')"
@@ -31,75 +71,46 @@ class User(flask_db.Model, UserMixin):
         return True
 
 
-class Entry(flask_db.Model):
-    title = CharField()
-    slug = CharField(unique=True)
-    content = TextField()
-    media = TextField()
-    published = BooleanField(index=True)
-    timestamp = DateTimeField(default=datetime.datetime.now, index=True)
+class Entry(SearchableMixin, db.Model):
+
+    __searchable__ = ['content']
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64), nullable=False)
+    slug = db.Column(db.String(64), unique=True, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    media = db.Column(db.String(64), nullable=False)
+    published = db.Column(db.Boolean, default=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = re.sub('[^\w]+','-',self.title.lower())
-        ret = super(Entry, self).save(*args, **kwargs)
-
-        self.update_search_index()
-        return ret 
-
-    def update_search_index(self):
-        search_content = '\n'.join((self.title, self.content))
-        try:
-            fts_entry = FTSEntry.get(FTSEntry.docid == self.id)
-        except FTSEntry.DoesNotExist:
-            FTSEntry.create(docid=self.id, content=search_content)
-        else:
-            fts_entry.content = search_content
-            fts_entry.save()
 
     @classmethod
     def public(cls):
         
-        return Entry.select().where(Entry.published == True)
-
-    @classmethod
-    def search(cls, query):
-        words = [word.strip() for word in query.split() if word.strip()]
-        if not words:
-            return Entry.select().where(Entry.id == 0)
-        else:
-            search = ' '.join(words)
-
-        return(Entry
-        .select(Entry, FTSEntry.rank().alias('score'))
-        .join(FTSEntry, on=(Entry.id == FTSEntry.docid))
-        .where(
-            (Entry.published == True) & 
-            (FTSEntry.match(search)))
-        .order_by(SQL('score')))
+        return Entry.query.filter_by(published=True).all()
 
     @classmethod
     def drafts(cls):
-        return Entry.select().where(Entry.published == False)
+        return Entry.query.filter_by(published=False).all()
 
-    @property
-    def html_content(self):
-        hilite = CodeHiliteExtension(linenums=False,css_class='highlight')
-        extras = ExtraExtension()
-        if self.media:
-            markdown_content = markdown(self.content, extensions=[hilite, extras])
-        else:
-            markdown_content = markdown(self.content, extensions=[hilite, extras])
-        oembed_content = parse_html(
-            markdown_content,
-            oembed_providers,
-            urlize_all=True,
-            maxwidth=app.config['SITE_WIDTH'])
-        return Markup(oembed_content)
+class MyModelView(ModelView):
+    
+
+    def is_accessible(self):
         
+        return (current_user.is_authenticated and current_user.is_admin == True)
 
-class FTSEntry(FTSModel):
-    content = SearchField()
- 
-    class Meta:
-        database = database
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('index'))
+
+class MyAdminIndexView(AdminIndexView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('index'))
+        

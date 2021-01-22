@@ -11,13 +11,16 @@
 		
 			<ul class="blogul">
 				<li class="rightitem">
+					{% if g.search_form %}
 					{% block search_bar %}
-						<form action="{{ url_for('blogs') }}" id="search-form" method="get" role="search">
+						<form action="{{ url_for('search') }}" id="search-form" method="get" role="search">
 							<div class="form-group">
-								<input class="form-control" name="q" placeholder="Search" type="text" value="{% if search %}{{ search }}{% endif %}">
+								{{ g.search_form.q(size=20, class='form-control', placeholder=g.search_form.q.label.text) }}
+								<!-- <input class="form-control" name="q" placeholder="Search" type="text" value="{% if search %}{{ search }}{% endif %}"> -->
 							</div>
 						</form>
 					{% endblock %}
+					{% endif %}
 				</li>
 				{% if current_user.is_authenticated %}
 				<li class="leftitem">
