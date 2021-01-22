@@ -5,19 +5,19 @@ from wtforms.validators import DataRequired, ValidationError, EqualTo
 from mycode.models import User, Entry
 
 #Registration form
-class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password= PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    passcode = StringField('Passcode', validators=[DataRequired()])
-    confirm_passcode = StringField('Confirm Passcode', validators=[DataRequired(), EqualTo('passcode')])
-    is_admin = BooleanField('Admin')
-    submit = SubmitField('Register')
+# class RegistrationForm(FlaskForm):
+#     username = StringField('Username', validators=[DataRequired()])
+#     password = PasswordField('Password', validators=[DataRequired()])
+#     confirm_password= PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+#     passcode = StringField('Passcode', validators=[DataRequired()])
+#     confirm_passcode = StringField('Confirm Passcode', validators=[DataRequired(), EqualTo('passcode')])
+#     is_admin = BooleanField('Admin')
+#     submit = SubmitField('Register')
     
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user:
-            raise ValidationError('This username is taken.')
+#     def validate_username(self, username):
+#         user = User.query.filter_by(username=username.data).first()
+#         if user:
+#             raise ValidationError('This username is taken.')
         
 # class EntryForm(FlaskForm):
 #     title = StringField('Title', validators=[DataRequired()])

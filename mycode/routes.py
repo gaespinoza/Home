@@ -1,5 +1,5 @@
 from mycode import app, bcrypt, db
-from mycode.forms import LoginForm, RegistrationForm, SearchForm
+from mycode.forms import LoginForm, SearchForm
 from mycode.models import Entry, User
 from flask import render_template, url_for, redirect, request, flash, session, abort, Markup, Response, g, current_app
 from flask_login import current_user, login_user, logout_user, login_required
@@ -24,20 +24,20 @@ def index():
 	return render_template('index.html')
 
 #Code used to create registration
-@app.route("/register", methods=['GET','POST'])
-def register():
-	if current_user.is_authenticated:
-		return redirect(url_for('index'))
-	form = RegistrationForm()
-	if form.validate_on_submit():
-		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-		hashed_passcode = bcrypt.generate_password_hash(form.passcode.data).decode('utf-8')
-		user = User(username=form.username.data, password=hashed_password, passcode=hashed_passcode, is_admin=form.is_admin.data)
-		db.session.add(user)
-		db.session.commit()
-		flash('Your account has been created', 'success')
-		return redirect(url_for('login'))
-	return render_template('register.html', form=form)
+# @app.route("/register", methods=['GET','POST'])
+# def register():
+# 	if current_user.is_authenticated:
+# 		return redirect(url_for('index'))
+# 	form = RegistrationForm()
+# 	if form.validate_on_submit():
+# 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+# 		hashed_passcode = bcrypt.generate_password_hash(form.passcode.data).decode('utf-8')
+# 		user = User(username=form.username.data, password=hashed_password, passcode=hashed_passcode, is_admin=form.is_admin.data)
+# 		db.session.add(user)
+# 		db.session.commit()
+# 		flash('Your account has been created', 'success')
+# 		return redirect(url_for('login'))
+# 	return render_template('register.html', form=form)
 
 @app.route('/login/', methods=["GET", "POST"])
 def login():
