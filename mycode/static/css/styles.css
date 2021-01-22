@@ -1,6 +1,7 @@
 
 .footer-layer {
-	position: relative;
+	position: absolute;
+	overflow: hidden;
   z-index: 4;
   bottom: 0;
   width: 100%;
@@ -14,6 +15,8 @@ html {
 	padding: 0;
 	font-family: "Garamond", sans-serif;
 	font-weight: 300;
+	position: relative;
+	min-height: 100%;
 }
 .heavier {
 	font-weight: 700;
@@ -21,6 +24,9 @@ html {
 
 body {
 	background-color: #efe6dd !important;
+	margin: 0 0 100px;
+	padding-top: 30px;
+	padding-bottom: 50px;
 }
 .center-everything {
 	display: flex;
@@ -64,4 +70,29 @@ body {
 	margin-right: auto;
 	align-items: center;
 
+}
 
+.myButton {
+	box-shadow:inset -14px 13px 17px -50px #ffffff;
+	background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+	background-color:#ffffff;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#666666;
+	font-family:Arial;
+	
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:8px 0px 27px #ffffff;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+	background-color:#f6f6f6;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}

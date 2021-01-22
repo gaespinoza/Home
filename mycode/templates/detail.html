@@ -1,0 +1,22 @@
+{% include "blog.html" %}
+<div>
+    
+
+{% block content %}
+<div style="padding-top: 10px;" align="center">
+<h2>{{ entry.title }}</h2>
+    {% if entry.media != 'None' %}
+        <img style="height: 250px; width: auto;" src="{{ entry.media }}">
+    {% endif %}
+<p>Created {{ entry.timestamp.strftime('%x at %X') }}</p>
+<a style="padding: 5px;"href="{{ url_for('blogs', slug=entry.slug) }}">back</a>
+{% if current_user.is_authenticated %}
+    <a style="padding: 5px;" href="{{ url_for('edit', slug=entry.slug) }}">Edit entry</a>
+{% endif %}
+</div>
+<div class="blogContent">
+{{ entry.content | safe }}
+</div>
+{% endblock %}
+
+</div>

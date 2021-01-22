@@ -1,10 +1,63 @@
 {% extends "layout.html" %}
+
+
+
 {% block content%}
+<link href="{{ url_for('static', filename='css/blog.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet" type="text/css">
 
+<div style="padding-top: 56px;"class="toptab animate__animated animate__fadeIn">
+		
+		
+			<ul class="blogul">
+				<li class="rightitem">
+					{% if g.search_form %}
+					{% block search_bar %}
+						<form action="{{ url_for('search') }}" id="search-form" method="get" role="search">
+							<div class="form-group">
+								{{ g.search_form.q(size=20, class='form-control', placeholder=g.search_form.q.label.text) }}
+								<!-- <input class="form-control" name="q" placeholder="Search" type="text" value="{% if search %}{{ search }}{% endif %}"> -->
+							</div>
+						</form>
+					{% endblock %}
+					{% endif %}
+				</li>
+				{% if current_user.is_authenticated %}
+				<li class="leftitem">
+					<a class="bloga" href="{{ url_for('drafts') }}">Drafts</a>
+				</li>
+				<li class="leftitem">
+					<a class="bloga" href="{{ url_for('create') }}">Create Entry</a>
+				</li>
+				{% endif %}
+			
+				
 
-	<div class="center-everything animate__animated animate__fadeIn">
-		<h2>BLOG</h2>
-	</div>
+				<li class="leftitem">
+					
+						
+							<a style="color: antiquewhite; font-size: 150%; padding-left: 5px;">{% if search %}Search "{{ search }}"{% else %}Gabe's Blog{% endif %}</a>
+						
+					
+
+				</li>
+				
+			</ul>
+		
+		
+
+		
+		
+	
+
+</div>
+{% if search %}
+						
+		<a style="color: black;" href="{{ url_for('blogs') }}">Back</a>
+	
+{% endif %}
+
+	
 
 
 {% endblock content %}
