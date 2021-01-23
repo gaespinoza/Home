@@ -75,10 +75,12 @@ def blogs():
 
 	prev_url = url_for('blogs', page=posts.prev_num) if posts.has_prev else None
 
+	p = posts.items[::-1]
+
 	
 
 	return render_template('blogs.html', title='Explore',
-	posts = posts.items, next_url=next_url, prev_url=prev_url)
+	posts = p, next_url=next_url, prev_url=prev_url)
 	
 
 @app.route("/search")
